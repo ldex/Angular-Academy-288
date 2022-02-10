@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { delay, map, Observable, tap } from 'rxjs';
+import { delay, map, Observable, shareReplay, tap } from 'rxjs';
 import { Product } from '../products/product.interface';
 
 @Injectable({
@@ -31,7 +31,8 @@ export class ProductService {
                         .get<Product[]>(this.baseUrl)
                         .pipe(
                           delay(1500), // fake delay!!
-                          tap(console.table)
+                          tap(console.table),
+                          shareReplay()
                         );
   }
 
