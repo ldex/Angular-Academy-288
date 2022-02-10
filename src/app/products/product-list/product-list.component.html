@@ -1,22 +1,67 @@
-<h2>
-    {{ title }}
-</h2>
+<mat-card>
+    <mat-card-title>
+        <h2>{{ title }}</h2>
+    </mat-card-title>
+    <mat-card-content>
 
-<ng-template #loading>
-    <h2 class="loading">Loading</h2>
-</ng-template>
+        <div class="table-header">
+        <mat-form-field>
+            <input matInput
+                (keyup)="applyFilter($event)"
+                placeholder="Filter">
+        </mat-form-field>
+        <!-- <button mat-raised-button
+                color="accent"
+                routerLink="insert">
+            <mat-icon>add</mat-icon> Add New</button> -->
+        </div>
 
-<ul class="products" *ngIf="products$ | async as products;else loading">
-    <li *ngFor="let product of products"
-        (click)="onSelect(product)"
-        [class.discontinued]="product.discontinued"
-        [class.selected]="selectedProduct === product">
-        <span class="name">{{ product.name | uppercase }}</span>
-        <span class="description">{{ product.description }}</span>
-        <span class="price">{{ product.price | currency:'CAD':'symbol-narrow':'.2' }}</span>
-    </li>
-</ul>
+        <div class="table-container mat-elevation-z8">
 
-<app-product-detail
-    [product]="selectedProduct"
-    (addedToFavorite)="onNewFavorite($event)"></app-product-detail>
+            <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+            <mat-table [dataSource]="dataSource" matSort>
+
+                <!-- ID Column -->
+                <ng-container matColumnDef="id">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+                <mat-cell *matCellDef="let product"> {{product.id}} </mat-cell>
+                </ng-container>
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+                <mat-cell *matCellDef="let product"> {{product.name}} </mat-cell>
+                </ng-container>
+
+                <!-- Description Column -->
+                <ng-container matColumnDef="description">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Description </mat-header-cell>
+                <mat-cell *matCellDef="let product"> {{product.description}} </mat-cell>
+                </ng-container>
+
+                <!-- Price Column -->
+                <ng-container matColumnDef="price">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Price </mat-header-cell>
+                <mat-cell *matCellDef="let product"> {{product.price | currency:'CAD':'symbol-narrow':'.2'}} </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let product; columns: displayedColumns;"
+                        [class.discontinued]="product.discontinued"
+                        [class.selected]="product === selectedProduct"
+                        (click)="onSelect(product)">
+                </mat-row>
+            </mat-table>
+
+            <mat-paginator #paginator
+                            [pageIndex]="0"
+                            [pageSize]="5"
+                            [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+
+        <app-product-detail
+            [product]="selectedProduct"
+            (addedToFavorite)="onNewFavorite($event)"></app-product-detail>
+
+    </mat-card-content>
+</mat-card>
