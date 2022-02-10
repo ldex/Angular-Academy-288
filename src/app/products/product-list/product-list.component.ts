@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { finalize, Observable } from 'rxjs';
 import { ProductService } from 'src/app/services/product.service';
 import { Product } from '../product.interface';
@@ -33,9 +34,12 @@ export class ProductListComponent implements OnInit, AfterViewInit {
 
   onSelect(product: Product) {
     this.selectedProduct = product;
+    this.router.navigateByUrl('/products/' + product.id);
   }
 
-  constructor(private productService: ProductService) {
+  constructor(
+    private productService: ProductService,
+    private router: Router) {
 
    }
 
